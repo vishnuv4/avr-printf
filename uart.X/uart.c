@@ -149,13 +149,27 @@ void UART_scanf(const char* format, ...)
                 }
                 case 'c':
                 {
-                    c = UART_receive(NULL);
-                    if(c != '\r' && c != '\n')
+                    while(1)
                     {
-                        char *char_ptr = va_arg(args, char*);
-                        *char_ptr = c;
+                        c = UART_receive(NULL);
+                        if(c != '\r' && c != '\n')
+                        {
+                            char *char_ptr = va_arg(args, char*);
+                            *char_ptr = c;
+                        }
+                        else if(c == '\r') 
+                        {
+                            c = UART_receive(NULL);
+                            if(c == '\n') 
+                            {
+                                break;
+                            }
+                        }
+                        else if(c == '\n') 
+                        {
+                            break;
+                        }
                     }
-                    break;
                 }
             }
         }

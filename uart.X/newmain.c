@@ -2,9 +2,9 @@
 /* ENABLES FOR EXAMPLES */
 /***************************************/
 
-#define PRINTF_HELLOWORLD   1cp 
+#define PRINTF_HELLOWORLD   0
 #define RECEIVE_STRING      0
-#define SCANFTEST_NUM       0
+#define SCANFTEST_NUM       1
 #define SCANFTEST_STR       0
 #define SCANFTEST_CHAR      0
 
@@ -79,7 +79,9 @@ int main()
 #if PRINTF_HELLOWORLD
 void printf_helloworld(void)
 {
-    printf("Hello World!\r\n");
+    static unsigned int ctr = 0;
+    printf("Hello World! Counter: %d\r\n", ctr);
+    ++ctr;
     _delay_ms(500);
 }
 #endif
@@ -88,9 +90,9 @@ void printf_helloworld(void)
 void receive_string(void)
 {
     char rcbuf[MAX_STRING_LENGTH];
-    printf("Enter a string: ");
+    printf("RECEIVE_STRING_TEST :: Enter a string: ");
     UART_receive_string(rcbuf);
-    printf("The string you entered is: %s\r\n", rcbuf);
+    printf("The string you entered is: %s\r\n\n", rcbuf);
 }
 #endif
 
@@ -98,9 +100,9 @@ void receive_string(void)
 void scanftest_char(void)
 {
     char ch;
-    printf("Enter a character: ");
+    printf("SCANFTEST_CHAR :: Enter a character: ");
     UART_scanf("%c\r\n",&ch);
-    printf("----The character is: %c\r\n", ch);
+    printf("----The character is: %c\r\n\n", ch);
 }
 #endif
 
@@ -108,7 +110,7 @@ void scanftest_char(void)
 void scanftest_num(void)
 {
     int num;
-    printf("Enter a number: ");
+    printf("SCANFTEST_NUM :: Enter a number: ");
     UART_scanf("%d\r\n", &num);
     if (num == 0)
     {
@@ -117,7 +119,7 @@ void scanftest_num(void)
     }
     else
     {
-        printf("ON -- The number is %d\r\n", num);
+        printf("ON -- The number is %d\r\n\n", num);
         PORTB |= (1 << LED_PIN);
     }
 }
@@ -127,8 +129,8 @@ void scanftest_num(void)
 void scanftest_str(void)
 {
     char rcbuf[MAX_STRING_LENGTH];
-    printf("Enter a string: ");
-    UART_scanf("%s", rcbuf);
-    printf("The string you entered is: %s\r\n", rcbuf);
+    printf("SCANFTEST_STR :: Enter a string: ");
+    UART_scanf("%s\r\n", rcbuf);
+    printf("The string you entered is: %s\r\n\n", rcbuf);
 }
 #endif
