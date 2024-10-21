@@ -1,3 +1,17 @@
+/***************************************/
+/* ENABLES FOR EXAMPLES */
+/***************************************/
+
+#define PRINTF_HELLOWORLD   0
+#define RECEIVE_STRING      0
+#define SCANFTEST_NUM       0
+#define SCANFTEST_STR       0
+#define SCANFTEST_CHAR      0
+
+/***************************************/
+/* INCLUDES AND DEFINES */
+/***************************************/
+
 #define F_CPU               16000000UL
 #define UART_BAUD_RATE      9600
 #define UART_BAUD_PRESCALER (((F_CPU / (UART_BAUD_RATE * 16UL))) - 1)
@@ -9,73 +23,106 @@
 
 #define LED_PIN PB5
 
-#define PRINTF_HELLOWORLD   0
-#define RECEIVE_STRING      0
-#define SCANFTEST_NUM       1
-#define SCANFTEST_STR       0
-#define SCANFTEST_CHAR      0
+/***************************************/
+/* GLOBALS */
+/***************************************/
 
-#if defined(SCANFTEST_STR) || defined(RECEIVE_STRING)
-char rcbuf[MAX_STRING_LENGTH];
-#endif
 
+
+/***************************************/
+/* FORWARD DECLARATIONS */
+/***************************************/
+
+void printf_helloworld(void);
+void receive_string(void);
+void scanftest_char(void);
+void scanftest_num(void);
+void scanftest_str(void);
+
+/***************************************/
+/* MAIN */
+/***************************************/
 int main()
 {
     UART_init(UART_BAUD_PRESCALER);
     DDRB |= (1 << LED_PIN);
     
-#if SCANFTEST_CHAR
-    char ch;
-#endif
-    
-#if SCANFTEST_NUM
-    int num;
-#endif
-    
     while(1)
     {
         
 #if PRINTF_HELLOWORLD
-        printf("Hello World!\r\n");
-        _delay_ms(500);
+    printf_helloworld();
 #endif
         
         
 #if RECEIVE_STRING
-        printf("Enter a string: ");
-        UART_receive_string(rcbuf);
-        printf("The string you entered is: %s\r\n", rcbuf);
+    receive_string();
 #endif
         
         
 #if SCANFTEST_CHAR
-        printf("Enter a character: ");
-        UART_scanf("%c\n",&ch);
-        printf("----The character is: %c\r\n", ch);
+    scanftest_char();
 #endif
         
         
 #if SCANFTEST_NUM
-        printf("Enter a number: ");
-        UART_scanf("%d\r\n", &num);
-        if (num == 0)
-        {
-            printf("OFF -- The number is %d\r\n", num);
-            PORTB &= ~(1 << LED_PIN);
-        }
-        else
-        {
-            printf("ON -- The number is %d\r\n", num);
-            PORTB |= (1 << LED_PIN);
-        }
+    scanftest_num();
 #endif
         
         
 #if SCANFTEST_STR
-        printf("Enter a string: ");
-        UART_scanf("%s", rcbuf);
-        printf("The string you entered is: %s\r\n", rcbuf);
+    scanftest_str();
 #endif
     }
     return 0;
+}
+
+/***************************************/
+/* EXAMPLES */
+/***************************************/
+void printf_helloworld(void)
+{
+    printf("Hello World!\r\n");
+    _delay_ms(500);
+}
+
+void receive_string(void)
+{
+    char rcbuf[MAX_STRING_LENGTH];
+    printf("Enter a string: ");
+    UART_receive_string(rcbuf);
+    printf("The string you entered is: %s\r\n", rcbuf);
+}
+
+void scanftest_char(void)
+{
+    char ch;
+    printf("Enter a character: ");
+    UART_scanf("%c\n",&ch);
+    printf("----The character is: %c\r\n", ch);
+}
+
+void scanftest_num(void)
+{
+    int num;
+    printf("Enter a number: ");
+    UART_scanf("%d\r\n", &num);
+    if (num == 0)
+    {
+    printf("OFF -- The number is %d\r\n", num);
+    PORTB &= ~(1 << LED_PIN);
+    }
+    else
+    {
+    printf("ON -- The number is %d\r\n", num);
+    PORTB |= (1 << LED_PIN);
+    }
+}
+
+void scanftest_str(void)
+{
+    char rcbuf[MAX_STRING_LENGTH];
+    printf("Enter a string: ");
+    UART_scanf("%s", rcbuf);
+    printf("The string you entered is: %s\r\n", rcbuf);
 }
