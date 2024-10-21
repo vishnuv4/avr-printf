@@ -73,7 +73,7 @@ void UART_scanf(const char* format, ...)
 {
     va_list args;
     va_start(args, format);
-    const char *p = format;
+    const char* p = format;
     char buffer[MAX_STRING_LENGTH];
     int i = 0, num = 0;
     char c;
@@ -89,14 +89,14 @@ void UART_scanf(const char* format, ...)
                     num = 0;
                     while(1) {
                         c = UART_receive(NULL);
-                        if (c >= '0' && c <= '9') 
+                        if(c >= '0' && c <= '9') 
                         {
                             num = num * 10 + (c - '0');
                         } 
                         else if(c == '\r') 
                         {
                             c = UART_receive(NULL);
-                            if (c == '\n') 
+                            if(c == '\n') 
                             {
                                 break;
                             }
@@ -121,23 +121,23 @@ void UART_scanf(const char* format, ...)
                     {
                         c = UART_receive(NULL);
 
-                        if (c == '\r') 
+                        if(c == '\r') 
                         {
                             c = UART_receive(NULL);
-                            if (c == '\n') 
+                            if(c == '\n') 
                             {
                                 buffer[i] = '\0';
                                 break;
                             }
                         }
 
-                        if (c == '\n') 
+                        if(c == '\n') 
                         {
                             buffer[i] = '\0';
                             break;
                         }
 
-                        if (i < MAX_STRING_LENGTH - 1) 
+                        if(i < MAX_STRING_LENGTH - 1) 
                         {
                             buffer[i++] = c;
                         }
@@ -150,8 +150,11 @@ void UART_scanf(const char* format, ...)
                 case 'c':
                 {
                     c = UART_receive(NULL);
-                    char *char_ptr = va_arg(args, char*);
-                    *char_ptr = c;
+                    if(c != '\r' && c != '\n')
+                    {
+                        char *char_ptr = va_arg(args, char*);
+                        *char_ptr = c;
+                    }
                     break;
                 }
             }
