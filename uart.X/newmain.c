@@ -2,7 +2,7 @@
 /* ENABLES FOR EXAMPLES */
 /***************************************/
 
-#define PRINTF_HELLOWORLD   1
+#define PRINTF_HELLOWORLD   1cp 
 #define RECEIVE_STRING      0
 #define SCANFTEST_NUM       0
 #define SCANFTEST_STR       0
@@ -36,6 +36,7 @@ void scanftest_str(void);
 /***************************************/
 /* MAIN */
 /***************************************/
+
 int main()
 {
     UART_init(UART_BAUD_PRESCALER);
