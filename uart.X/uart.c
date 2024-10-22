@@ -18,7 +18,6 @@ void UART_init(int BAUD_PRESCALER)
     
     __init_stdout(UART_send);
     __init_stdin(UART_receive);
-    fdevopen(UART_send, UART_receive);
 }
 
 int UART_send(char data, FILE* stream)
