@@ -17,3 +17,7 @@ For ```UART_scanf()```, only three format specifiers have been implemented:
 - ```%c```: character
 
 You might ask why we can use the standard printf, but not the standard scanf. Well, the native printf works just fine by piping stdout to the UART interface. The native scanf also technically can work the same way - however, that has double buffering issues with UART, and apparently you can't disable those on the XC8 compiler. So I implemented my own version and called it UART_scanf.
+
+## Examples
+
+The newmain.c file has some example code that you can selectively enable or disable at the top of that file.
