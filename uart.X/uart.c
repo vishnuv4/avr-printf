@@ -4,6 +4,10 @@
 #include <stdarg.h>
 #include <string.h>
 
+#if !defined(CR) && !defined(LF) && !defined(CRLF)
+#error "No line termination defined!"
+#endif
+
 void UART_init(int BAUD_PRESCALER)
 {
 
@@ -36,39 +40,28 @@ int UART_receive(FILE* stream)
     return UDR0;
 }
 
-void UART_receive_string(char* buffer)
-{
-    char received_char;
-    unsigned int i = 0;
+void determine_line_ending() {
+    char c;
+    printf("Press Enter to detect the line ending style...\n");
 
-    while(1) 
+    while(1)
     {
-        received_char = UART_receive(NULL);
-        
-        if (received_char == '\r') 
-        {
-            received_char = UART_receive(NULL);
-            if (received_char == '\n') 
-            {
-                buffer[i] = '\0';
-                break;
-            }
-        }
-
-        if (received_char == '\n') 
-        {
-            buffer[i] = '\0';
-            break;
-        }
-
-        if (i < MAX_STRING_LENGTH - 1) 
-        {
-            buffer[i++] = received_char;
+        c = UART_receive(NULL);
+        if (c == '\r') {
+            printf("\\r (CR) detected.\n");
+        } else if (c == '\n') {
+            printf("\\n (LF) detected.\n");
+        } else {
+            printf("Unknown line ending.\n");
         }
     }
 }
 
 // Only integer (%d), char (%c), and string (%s) format specifiers have been implemented
+#if !defined(CR) && !defined(LF) && !defined(CRLF)
+#error "No line termination defined! Use one of CR, LF, or CRLF"
+#else
+#ifdef MAX_STRING_LENGTH
 void UART_scanf(const char* format, ...)
 {
     va_list args;
@@ -92,23 +85,22 @@ void UART_scanf(const char* format, ...)
                         if(c >= '0' && c <= '9') 
                         {
                             num = num * 10 + (c - '0');
-                        } 
-                        else if(c == '\r') 
-                        {
-                            c = UART_receive(NULL);
-                            if(c == '\n') 
-                            {
-                                break;
-                            }
                         }
-                        else if(c == '\n') 
+                        #if defined(CR) || defined(CRLF)
+                        else if(c == '\r')
+                        {
+                            #ifdef CRLF
+                            UART_receive(NULL);
+                            #endif
+                            break;
+                        }
+                        #endif
+                        #ifdef LF
+                        else if(c == '\n')
                         {
                             break;
                         }
-                        else 
-                        {
-                            break;
-                        }
+                        #endif
                     }
                     int *int_ptr = va_arg(args, int*);
                     *int_ptr = num;
@@ -121,23 +113,25 @@ void UART_scanf(const char* format, ...)
                     {
                         c = UART_receive(NULL);
 
-                        if(c == '\r') 
+                        #if defined(CR) || defined(CRLF) 
+                        if(c == '\r')
                         {
-                            c = UART_receive(NULL);
-                            if(c == '\n') 
-                            {
-                                buffer[i] = '\0';
-                                break;
-                            }
+                            #ifdef CRLF
+                            UART_receive(NULL);
+                            #endif
+                            buffer[i] = '\0';
+                            break;
                         }
-
-                        if(c == '\n') 
+                        #endif
+                        #ifdef LF
+                        if(c == '\n')
                         {
                             buffer[i] = '\0';
                             break;
                         }
+                        #endif
 
-                        if(i < MAX_STRING_LENGTH - 1) 
+                        if(i < MAX_STRING_LENGTH - 1 && c != '\r' && c != '\n') 
                         {
                             buffer[i++] = c;
                         }
@@ -152,23 +146,23 @@ void UART_scanf(const char* format, ...)
                     while(1)
                     {
                         c = UART_receive(NULL);
-                        if(c != '\r' && c != '\n')
+                        #if defined(CR) || defined(CRLF)
+                        if(c == '\r') 
                         {
-                            char *char_ptr = va_arg(args, char*);
-                            *char_ptr = c;
-                        }
-                        else if(c == '\r') 
-                        {
+                            #ifdef CRLF
                             c = UART_receive(NULL);
-                            if(c == '\n') 
-                            {
-                                break;
-                            }
+                            #endif
+                            break;
                         }
-                        else if(c == '\n') 
+                        #endif
+                        #ifdef LF
+                        if(c == '\n') 
                         {
                             break;
                         }
+                        #endif
+                        char *char_ptr = va_arg(args, char*);
+                        *char_ptr = c;
                     }
                 }
             }
@@ -177,3 +171,7 @@ void UART_scanf(const char* format, ...)
     }
     va_end(args);
 }
+#else
+#error "MAX_STRING_LENGTH undefined"
+#endif
+#endif

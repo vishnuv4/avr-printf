@@ -1,12 +1,14 @@
 /***************************************/
-/* ENABLES FOR EXAMPLES */
+/* EXAMPLES CONFIG */
 /***************************************/
 
-#define PRINTF_HELLOWORLD   0
-#define RECEIVE_STRING      0
-#define SCANFTEST_NUM       1
-#define SCANFTEST_STR       0
-#define SCANFTEST_CHAR      0
+// Set these to 0 or 1 to enable or disable the example
+
+#define PRINTF_HELLOWORLD   0       // Prints Hello World and a counter
+#define LINE_ENDING         0       // Shows you the line termination style of your terminal emulator
+#define SCANFTEST_NUM       0       // Scan a number, turn onboard LED off for 0 and on for anything else
+#define SCANFTEST_STR       0       // Echoes the entered string
+#define SCANFTEST_CHAR      1       // Echoes the entered character
 
 /***************************************/
 /* INCLUDES AND DEFINES */
@@ -45,29 +47,26 @@ int main()
     while(1)
     {
         
-#if PRINTF_HELLOWORLD
+    #if PRINTF_HELLOWORLD
     printf_helloworld();
-#endif
+    #endif
         
-        
-#if RECEIVE_STRING
-    receive_string();
-#endif
-        
-        
-#if SCANFTEST_CHAR
+    #if SCANFTEST_CHAR
     scanftest_char();
-#endif
+    #endif
         
-        
-#if SCANFTEST_NUM
+    #if SCANFTEST_NUM
     scanftest_num();
-#endif
+    #endif
         
-        
-#if SCANFTEST_STR
+    #if SCANFTEST_STR
     scanftest_str();
-#endif
+    #endif
+
+    #if LINE_ENDING
+    determine_line_ending();
+    #endif
+
     }
     return 0;
 }
@@ -86,16 +85,6 @@ void printf_helloworld(void)
 }
 #endif
 
-#if RECEIVE_STRING
-void receive_string(void)
-{
-    char rcbuf[MAX_STRING_LENGTH];
-    printf("RECEIVE_STRING_TEST :: Enter a string: ");
-    UART_receive_string(rcbuf);
-    printf("The string you entered is: %s\r\n\n", rcbuf);
-}
-#endif
-
 #if SCANFTEST_CHAR
 void scanftest_char(void)
 {
@@ -110,11 +99,11 @@ void scanftest_char(void)
 void scanftest_num(void)
 {
     int num;
-    printf("SCANFTEST_NUM :: Enter a number: ");
-    UART_scanf("%d\r\n", &num);
+    printf("SCANFTEST_NUM :: Enter a number:\r\n");
+    UART_scanf("%d", &num);
     if (num == 0)
     {
-        printf("OFF -- The number is %d\r\n", num);
+        printf("OFF -- The number is %d\r\n\n", num);
         PORTB &= ~(1 << LED_PIN);
     }
     else
