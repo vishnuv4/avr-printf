@@ -4,10 +4,6 @@
 #include <stdarg.h>
 #include <string.h>
 
-#if !defined(CR) && !defined(LF) && !defined(CRLF)
-#error "No line termination defined!"
-#endif
-
 void UART_init(int BAUD_PRESCALER)
 {
 
@@ -59,7 +55,7 @@ void determine_line_ending() {
 
 // Only integer (%d), char (%c), and string (%s) format specifiers have been implemented
 #if !defined(CR) && !defined(LF) && !defined(CRLF)
-#error "No line termination defined! Use one of CR, LF, or CRLF"
+#error "No line termination defined! #define one out of CR, LF, or CRLF"
 #else
 #ifdef MAX_STRING_LENGTH
 void UART_scanf(const char* format, ...)

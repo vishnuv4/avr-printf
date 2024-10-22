@@ -4,11 +4,11 @@
 
 // Set these to 0 or 1 to enable or disable the example
 
-#define PRINTF_HELLOWORLD   0       // Prints Hello World and a counter
+#define PRINTF_HELLOWORLD   1       // Prints Hello World and a counter
 #define LINE_ENDING         0       // Shows you the line termination style of your terminal emulator
 #define SCANFTEST_NUM       0       // Scan a number, turn onboard LED off for 0 and on for anything else
 #define SCANFTEST_STR       0       // Echoes the entered string
-#define SCANFTEST_CHAR      1       // Echoes the entered character
+#define SCANFTEST_CHAR      0       // Echoes the entered character
 
 /***************************************/
 /* INCLUDES AND DEFINES */
