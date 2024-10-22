@@ -8,8 +8,8 @@ The instructions on how to configure that can be found in the uart.h file, in th
 
 ## APIs
 
-- ```printf("<format string>", ...)```: works just like the native ```printf()```
-- ```UART_scanf("<format string>", ...)```: works just like the native ```scanf()```
+- ```printf("<format string>", arg1, arg2, ...)```: works just like the native ```printf()```
+- ```UART_scanf("<format string>", &arg1, &arg2, ...)```: works just like the native ```scanf()```
 
 For ```UART_scanf()```, only three format specifiers have been implemented:
 - ```%d```: integer
